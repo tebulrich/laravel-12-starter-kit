@@ -1,0 +1,93 @@
+services:
+    php:
+        build:
+            context: './docker/php/8.4'
+            dockerfile: Dockerfile
+            args:
+                DOCKER_WWWUSER: '${DOCKER_WWWUSER}'
+                DOCKER_WWWGROUP: '${DOCKER_WWWGROUP}'
+                APP_ENV: '${APP_ENV}'
+        restart: 'unless-stopped'
+        image: 'sail-8.4/app'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${APP_PORT_FRANKENPHP_HTTPS:-8443}:443'
+            - '${APP_PORT_FRANKENPHP_HTTPS:-8443}:443/udp'
+        environment:
+            DOCKER_WWWUSER: '${DOCKER_WWWUSER}'
+            DOCKER_WWWGROUP: '${DOCKER_WWWGROUP}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+            PHP_IDE_CONFIG: 'serverName=localhost'
+        volumes:
+            - '.:/var/www/html'
+            - './docker/configs/000-default.conf:/etc/apache2/sites-available/000-default.conf'
+            - './docker/configs/laravel-log-rotate:/etc/logrotate.d/laravel-log-rotate'
+            - './docker/configs/xdebug-${APP_ENV}.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini'
+            - './docker/configs/supervisor/:/etc/supervisor/conf.d/'
+            - './docker/configs/supervisord.conf:/etc/supervisor/supervisord.conf'
+            - './certs/localhost.pem:/etc/ssl/certs/localhost.pem'
+            - './certs/localhost-key.pem:/etc/ssl/certs/localhost-key.pem'
+            - './bash_history:/home/1000/.bash_history'
+        networks:
+            - sail
+        depends_on:
+            mysql:
+                condition: service_started
+            rabbitmq:
+                condition: service_healthy
+
+    mysql:
+        image: 'mysql/mysql-server:8.0'
+        restart: 'unless-stopped'
+        ports:
+            - '${FORWARD_DB_MYSQL_PORT:-3306}:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - 'mysql:/var/lib/mysql'
+        networks:
+            - sail
+
+    rabbitmq:
+        build:
+            context: './docker/rabbitmq'
+        restart: 'unless-stopped'
+        ports:
+            - '127.0.0.1:${RABBITMQ_PORT_AMQP:-5672}:5672'
+            - '${RABBITMQ_PORT_HTTP:-15672}:${RABBITMQ_PORT_HTTP:-15672}'
+        environment:
+            RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+            RABBITMQ_DEFAULT_VHOST: "/"
+            TZ: Europe/Zurich
+        networks:
+            - sail
+        healthcheck:
+            test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+    mailhog:
+        image: mailhog/mailhog
+        restart: 'unless-stopped'
+        ports:
+            - "${MAILHOG_PORT_SMTP:-1025}:1025"
+            - "${MAILHOG_PORT_HTTP:-8025}:8025"
+        networks:
+            - sail
+
+networks:
+    sail:
+        driver: bridge
+volumes:
+    mysql:
+        driver: local
+    meili_data:
+        driver: local

@@ -21,3 +21,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/bolt.db
+/certs/localhost-key.pem
+/certs/localhost.pem
