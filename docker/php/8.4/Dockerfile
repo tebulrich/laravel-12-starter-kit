@@ -9,6 +9,9 @@ WORKDIR /var/www/html
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
+ENV FRANKENPHP_VERSION=v1.8.0
+ENV FRANKENPHP_FILENAME=frankenphp-linux-x86_64
+
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -47,11 +50,11 @@ RUN apt-get -y update --fix-missing && \
         supervisor && \
     rm -rf /var/lib/apt/lists/*
 
-# Download and install the latest FrankenPHP based on FAP_ARCHITECTURE
-RUN latest_version=$(curl -s https://api.github.com/repos/dunglas/frankenphp/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
-    wget -O /tmp/frankenphp-linux-x86_64 https://github.com/dunglas/frankenphp/releases/download/${latest_version}/frankenphp-linux-x86_64 && \
-    mv /tmp/frankenphp-linux-x86_64 /usr/local/bin/frankenphp && \
-    chmod +x /usr/local/bin/frankenphp
+# Download and install the latest FrankenPHP for x86_64
+RUN echo "==> Downloading FrankenPHP $FRANKENPHP_VERSION ($FRANKENPHP_FILENAME)" && \
+    curl -fL "https://github.com/php/frankenphp/releases/download/${FRANKENPHP_VERSION}/${FRANKENPHP_FILENAME}" -o /tmp/frankenphp && \
+    chmod +x /tmp/frankenphp && \
+    mv /tmp/frankenphp /usr/local/bin/frankenphp
 
 # Create FrankenPHP Apache configuration file
 RUN echo '<IfModule mod_proxy.c>\n\
@@ -100,10 +103,15 @@ RUN a2enmod rewrite headers
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY php.ini /usr/local/etc/php/php.ini
 
+# Create logrotate state directory
+RUN mkdir -p /var/lib/logrotate && \
+    chmod 755 /var/lib/logrotate
+
 # Create user and group
 RUN groupadd --gid 1000 $DOCKER_WWWGROUP && \
     useradd --uid 1000 --gid 1000 -m $DOCKER_WWWUSER && \
-    chown 1000:1000 /var/log -R && chown 1000:1000 /var/run/ -R
+    chown 1000:1000 /var/log -R && chown 1000:1000 /var/run/ -R && \
+    chown 1000:1000 /var/lib/logrotate -R
 
 # Switch to the new user
 USER $DOCKER_WWWUSER
