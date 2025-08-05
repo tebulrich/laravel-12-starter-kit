@@ -82,8 +82,10 @@ The starter kit comes with pre-configured Supervisor processes that run automati
 
 1. Clone this repository
 2. Copy `.env.example` to `.env` and configure as needed
-3. Run `docker-compose up -d`
-4. Access your application at https://localhost
+3. Run `./start.sh` to start the application
+   - This script generates SSL certificates, creates a .env file if needed, and starts Docker containers
+4. Run `./stop.sh` when you want to stop the application
+5. Access your application at https://localhost or http://localhost
 
 ## Environment Configuration
 
