@@ -9,7 +9,7 @@ WORKDIR /var/www/html
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
-ENV FRANKENPHP_VERSION=v1.8.0
+ENV FRANKENPHP_VERSION=v1.9.0
 ENV FRANKENPHP_FILENAME=frankenphp-linux-x86_64
 
 # Set timezone

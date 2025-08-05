@@ -1,6 +1,7 @@
 # Laravel 12 Starter Kit
 
-A comprehensive starter kit for Laravel 12 applications with modern development tools, optimized Docker setup, and pre-configured services.
+A comprehensive starter kit for Laravel 12 applications with modern development tools, optimized Docker setup, and
+pre-configured services.
 
 ## Features
 
@@ -9,6 +10,7 @@ A comprehensive starter kit for Laravel 12 applications with modern development 
 - **PHP 8.4** - Latest PHP version with improved performance and features
 - **FrankenPHP** - Modern PHP application server with HTTP/3 support and Octane integration
 - **HTTP/3 Early Hints** - Improved page load times with early resource hints
+- **Apache** - for debugging with Xdebug
 
 ### 🐳 Docker Environment
 
@@ -20,27 +22,32 @@ A comprehensive starter kit for Laravel 12 applications with modern development 
 ### 📦 Pre-configured Laravel Packages
 
 #### Core Packages
-- **Laravel 12.0** - Latest Laravel framework
+
+- **Laravel 12** - Latest Laravel framework
 - **Laravel Telescope** - Debug assistant for Laravel applications
 
 #### Development Tools
+
 - **Laravel Debugbar** - Debug toolbar for Laravel applications
 - **Laravel Pail** - Real-time log viewer
 - **Laravel Pint** - PHP code style fixer
 - **Laravel Breeze** - Minimal authentication scaffolding
 
 #### Queue & Messaging
+
 - **Laravel RabbitMQ** - RabbitMQ integration for Laravel queues
 - **PHP AMQPLIB** - PHP AMQP library for RabbitMQ communication
 - **Symfony Mercure** - Real-time updates using the Mercure protocol
 
 #### UI & Frontend
+
 - **Tailwind CSS** - Utility-first CSS framework with custom configuration
 - **Blade UI Kit** - UI components for Laravel Blade
 - **Blade Heroicons** - Heroicons integration for Blade
 - **Ziggy** - Use Laravel routes in JavaScript
 
 #### Utilities
+
 - **Dotenv Editor** - Edit .env files programmatically
 - **Security Advisories Health Check** - Security vulnerability scanning
 
@@ -48,7 +55,7 @@ A comprehensive starter kit for Laravel 12 applications with modern development 
 
 ### Services
 
-- **PHP**: Runs on ports 80 (HTTP) and 443 (HTTPS/HTTP3)
+- **PHP**: Runs on ports 80 (HTTP with Apache) and 443 (HTTPS/HTTP3 with FrankenPHP)
 - **MySQL**: Runs on port 3306
 - **RabbitMQ**: Runs on ports 5672 (AMQP) and 15672 (Management UI)
 - **MailHog**: Runs on ports 1025 (SMTP) and 8025 (Web UI)
@@ -99,6 +106,7 @@ The starter kit comes with a pre-configured frontend setup:
 - **Automatic Asset Building**: Assets are automatically built and watched for changes
 
 When the container starts, the following happens automatically:
+
 1. Yarn dependencies are installed (`yarn install`)
 2. Assets are built with Tailwind CSS processing
 3. The build process continues in watch mode to rebuild on file changes
@@ -115,6 +123,6 @@ This starter kit includes security tools:
 - **Roave Security Advisories**: Prevents installation of packages with known security issues
 - **Spatie Security Advisories Health Check**: Checks for security vulnerabilities
 
-## License
+## Author
 
-This starter kit is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+T. Ulrich <dlhairbus320@googlemail.com>
