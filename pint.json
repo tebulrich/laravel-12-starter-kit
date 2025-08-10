@@ -1,0 +1,19 @@
+{
+    "preset": "laravel",
+    "exclude": [
+        "bootstrap/cache",
+        "docker",
+        "storage",
+        "vendor"
+    ],
+    "rules": {
+        "no_superfluous_phpdoc_tags": false,
+        "concat_space": {
+            "spacing": "one"
+        },
+        "binary_operator_spaces": {
+            "default": "align_single_space"
+        },
+        "phpdoc_separation": true
+    }
+}

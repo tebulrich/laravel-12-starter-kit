@@ -25,7 +25,7 @@ class LogsRotateCommand extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $this->info('Rotating logs...');
         exec('/usr/sbin/logrotate /etc/logrotate.d/laravel-log-rotate --state /var/lib/logrotate/status');

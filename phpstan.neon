@@ -1,0 +1,51 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - app/
+        - config/
+        - database/
+        - routes/
+
+    # Exclude paths that don't need analysis
+    excludePaths:
+        - bootstrap/
+        - storage/
+        - vendor/
+        - public/
+        - resources/views/
+
+    # Ignore common Laravel patterns
+    ignoreErrors:
+        # Ignore missing return types on migrations
+        - '#Method .+Migration::(up|down)\(\) has no return type specified#'
+
+        # Ignore missing return types on seeders
+        - '#Method .+Seeder::run\(\) has no return type specified#'
+
+        # Ignore Eloquent dynamic properties
+        - '#Access to an undefined property [a-zA-Z0-9\\_]+::\$[a-zA-Z0-9_]+#'
+
+        # Ignore Laravel facades
+        - '#Call to an undefined static method [a-zA-Z0-9\\_]+::[a-zA-Z0-9_]+\(\)#'
+
+        # Ignore config() helper return type
+        - '#Cannot call method .+ on mixed#'
+
+        # Ignore request validation rules
+        - '#Method .+Request::rules\(\) should return array.+ but returns array#'
+
+        # Ignore template covariance issues with Eloquent relationships
+        - '#Method .+::.+\(\) should return .+<.+, .+> but returns .+<.+, \$this\(.+\)>#'
+
+        # Ignore specific covariance issue in ProcessorVersion::oauthClients()
+        - '#Method App\\Models\\ProcessorVersion::oauthClients\(\) should return .+BelongsToMany.+#'
+
+        # Ignore unresolvable type in ProcessorService map() callback
+        - '#Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection.*::map\(\) contains unresolvable type#'
+
+    # Additional Laravel-specific settings
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
