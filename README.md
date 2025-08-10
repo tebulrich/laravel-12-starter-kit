@@ -117,6 +117,44 @@ When the container starts, the following happens automatically:
 
 - `composer dev`: Starts development environment with concurrent processes
 - `composer test`: Runs tests
+- `composer code-quality`: Runs all code-quality checks and fixes where possible
+
+## Code Quality
+
+This project includes a set of scripts to standardize and automate code quality checks. They wrap commonly used tools and provide a single entry point you can run locally or in CI.
+
+Included checks:
+
+- Laravel Pint — code style/formatting (pint.json)
+- Rector — automated refactoring and modernization (rector.php)
+- PHPStan — static analysis (phpstan.neon)
+- PHPUnit — unit and feature tests (phpunit.xml)
+- Composer Audit — dependency vulnerability scan
+
+Quick start:
+
+- Run everything (will apply fixes where possible):
+  - composer code-quality
+  - or: ./scripts/code-quality.sh
+- Dry run (report only, do not change files):
+  - composer run code-quality -- --dry-run
+  - or: ./scripts/code-quality.sh --dry-run
+
+Notes and prerequisites:
+
+- The aggregator script will run composer install automatically if vendor/ is missing.
+- Ensure Composer and PHP 8.4 are available locally. Some tools may require ext-curl and ext-zlib (already declared in composer.json).
+- The PHPUnit script creates a fresh .env from .env.example, generates a key, uses an SQLite database at database/database.sqlite for tests, and restores your original .env when finished.
+
+Run checks individually (optional):
+
+- Formatting with Pint: ./scripts/pint.sh [--dry-run]
+- Refactoring with Rector: ./scripts/rector.sh [--dry-run]
+- Static analysis with PHPStan: ./scripts/phpstan.sh [--dry-run]
+- Run tests with PHPUnit: ./scripts/phpunit.sh [--dry-run]
+- Security audit with Composer: ./scripts/composer-audit.sh [--dry-run]
+
+Tip: You can pass tool-specific flags by running the tool directly from vendor/bin if needed.
 
 ## Security
 
